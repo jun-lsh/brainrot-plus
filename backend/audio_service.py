@@ -62,11 +62,11 @@ def generate_audio_timestamps(input_audio, script, emphasis_words):
             word['end'] = word_obj.end - segment_info['start']
             word['highlighted'] = False
             if emphasis_it != len(emphasis_words):
-                if re.sub('[^A-Za-z0-9]+', '', word.word).lower() == emphasis_words[emphasis_it]:
+                if re.sub('[^A-Za-z0-9]+', '', word_obj.word).lower() == re.sub('[^A-Za-z0-9]+', '', emphasis_words[emphasis_it]):
                     word['highlighted'] = True
                     emphasis_it += 1
             segment_info['words'].append(word)
-            
+
         durations.append(segment_info)
 
     return durations
