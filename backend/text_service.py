@@ -5,14 +5,35 @@ import moviepy.editor as mpy
 import moviepy.video.fx.all as vfx
 
 
-def select_clip(dir: str, duration: float, aspect: float = 9 / 16) -> mpy.VideoClip:
+def crop_to_aspect(
+    video: mpy.VideoClip, aspect: float = 9 / 16, overflow: bool = False
+) -> mpy.VideoClip:
     """
-    Selects a random video clip from a directory of videos, and crops to the specified aspect
+    Crops a video to the specified aspect
+
+    :param mpy.VideoClip video: Video clip to crop
+    :param float aspect: The desired aspect ratio of the output
+    :rtype: mpy.VideoClip
+    """
+    (w, h) = video.size
+    if overflow:
+        video = video.resize(1.3)
+    new_w = int(min(w, aspect * h))
+    new_h = int(min(h, w / aspect))
+
+    cropped = vfx.crop(
+        video, width=new_w, height=new_h, x_center=int(w / 2), y_center=(h / 2)
+    )
+    return cropped
+
+
+def select_clip(dir: str, duration: float) -> mpy.VideoClip:
+    """
+    Selects a random video clip from a directory of videos
 
     :param str dir: The directory containing the videos to choose from
     :param float duration: The desired duration for the output
-    :param float aspect: The desired aspect ratio of the output
-    :return: The cropped video clip in the desired duration
+    :return: The random video clip in the desired duration
     :rtype: mpy.VideoClip
     :raises Exception: if there are no videos in the directory which are suitable
     """
@@ -33,16 +54,7 @@ def select_clip(dir: str, duration: float, aspect: float = 9 / 16) -> mpy.VideoC
     end = start + duration
 
     cut = clip.subclip(start, end)
-    (w, h) = cut.size
-    print(w, h)
-    new_w = int(min(w, aspect * h))
-    new_h = int(min(h, w / aspect))
-    print(new_w, new_h)
-
-    cropped = vfx.crop(
-        cut, width=new_w, height=new_h, x_center=int(w / 2), y_center=(h / 2)
-    )
-    return cropped
+    return cut
 
 
 def animate_text(
@@ -52,11 +64,12 @@ def animate_text(
     audioclip: mpy.AudioClip,
     font: str,
     font_size: int,
-    text_color: str = "black",
-    stroke_color: str = "white",
+    text_color: str = "white",
+    stroke_color: str = "black",
     stroke_width: float = 2,
     highlight_color: str = "red",
     fade_duration: float = 0.3,
+    stay_duration: float = 0.8,
     wrap_width_ratio: float = 0.8,
 ) -> mpy.VideoClip:
     """
@@ -79,7 +92,7 @@ def animate_text(
     for text_detail in text_meta:
         words_meta = text_detail["words"]
         sentence_start_t = text_detail["start"] + time
-        sentence_end_t = text_detail["end"] + time
+        sentence_end_t = text_detail["end"] + time + stay_duration
 
         all_word_clips = []
         for word_detail in words_meta:

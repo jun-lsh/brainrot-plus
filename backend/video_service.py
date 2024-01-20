@@ -51,9 +51,9 @@ def slide_transition(clip1, clip2, speed, direction):
         mpy.CompositeVideoClip(
             [
                 clip1_tmp,
-                slide_out_clip1.set_start(speed).crossfadein(speed / 2),
-                slide_in_clip2.set_start(speed),
-                clip2_tmp.set_start(speed * 2).crossfadein(speed / 2),
+                slide_out_clip1.set_start(speed / 2).crossfadein(speed / 4),
+                slide_in_clip2.set_start(speed / 2),
+                clip2_tmp.set_start(speed / 2).crossfadein(speed / 4),
             ]
         ),
         speed / 2,
@@ -152,8 +152,8 @@ def generate_timings(script, transcript):
 
 
 def wobble_effect(clip):
-    x, y = generate_noise(int(clip.duration * clip.fps) * 10, 240), generate_noise(
-        int(clip.duration * clip.fps) * 10, 240
+    x, y = generate_noise(int(clip.duration * clip.fps) * 10, 180), generate_noise(
+        int(clip.duration * clip.fps) * 10, 180
     )
 
     def shake(t, x, y, inc, pos):
@@ -166,11 +166,11 @@ def wobble_effect(clip):
     cl = clip.set_pos(lambda t: shake(t, x, y, inc, pos))
     w, h = cl.size
     return vfx.crop(
-        mpy.CompositeVideoClip([cl.resize(1.3)]),
-        x1=w * 0.15,
-        y1=h * 0.15,
-        x2=w * 1.15,
-        y2=h * 1.15,
+        mpy.CompositeVideoClip([cl.resize(1.4)]),
+        x1=w * 0.2,
+        y1=h * 0.2,
+        x2=w * 1.2,
+        y2=h * 1.2,
     )
 
 
@@ -188,9 +188,12 @@ def generate_slideshow(images, timings):
             chosen_transition = transitions[np.random.randint(0, 3)]
             continue
 
-        image_clip = mpy.ImageClip(images[block["image_idx"]]).set_duration(
-            block["duration"]
-        )
+        image_clip = mpy.ImageClip(images[block["image_idx"]])
+        image_clip = image_clip.on_color(
+            size=(int(image_clip.size[0] * 1.2), int(image_clip.size[1] * 1.2)),
+            color=([1, 0, 0]),
+            col_opacity=0,
+        ).set_duration(block["duration"])
         if chosen_transition != None:
             if chosen_transition == slide_transition:
                 clips.append(
@@ -211,6 +214,4 @@ def generate_slideshow(images, timings):
         clips.append(mpy.CompositeVideoClip([image_clip]))
         image_clip.close()
 
-    clip = wobble_effect(mpy.concatenate_videoclips(clips))
-
-    return mpy.CompositeVideoClip([clip])
+    return mpy.concatenate_videoclips(clips)
