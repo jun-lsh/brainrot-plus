@@ -162,3 +162,8 @@ cython_debug/
 
 #others
 .streamlit/
+
+# google images service
+googleimages_service/webdriver/chromedriver.exe
+googleimages_service/webdriver/LICENSE.chromedriver
+googleimages_service/photos
