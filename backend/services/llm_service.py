@@ -4,7 +4,7 @@ from config import prompt_template
 def construct_prompt(context:str) -> str:
     return prompt_template.format(context=context)
 
-def generate(prompt:str,model_instance:str,client:AzureOpenAI) -> str:
+def generate_script(prompt:str,model_instance:str,client:AzureOpenAI) -> str:
     try:
         completion = client.chat.completions.create(
             model=model_instance,  # e.g. gpt-35-instant

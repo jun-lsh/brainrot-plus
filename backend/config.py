@@ -1,6 +1,7 @@
 import os
 from openai import AzureOpenAI
 from dotenv import load_dotenv
+
 load_dotenv()
 
 client =  AzureOpenAI(
@@ -8,10 +9,13 @@ client =  AzureOpenAI(
     api_version="2023-07-01-preview",
     # https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal#create-a-resource
     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+    
 
 )
 
 model_instance = os.getenv("AZURE_OPENAI_GPT4_DEPLOYMENT_NAME")
+
 
 
 prompt_template = '''
