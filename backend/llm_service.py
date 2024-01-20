@@ -20,7 +20,7 @@ def generate(prompt: str, model: str=default_model) -> dict:
             highlights = sum((x.split() for x in highlights), start=[])
             all_highlight.extend(x.lower() for x in highlights if x)
 
-        all_highlight = sorted(set(all_highlight))
+        # all_highlight = sorted(set(all_highlight))
 
         return {"scenes": outp, "text": all_text, "highlights": all_highlight}
 
