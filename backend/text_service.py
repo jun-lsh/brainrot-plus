@@ -5,9 +5,17 @@ import moviepy.editor as mpy
 import moviepy.video.fx.all as vfx
 
 
-def select_clip(
-    dir: str, duration: float, aspect=9 / 16
-) -> VideoClip:  # aspect is epcified in w/h
+def select_clip(dir: str, duration: float, aspect: float = 9 / 16) -> mpy.VideoClip:
+    """
+    Selects a random video clip from a directory of videos, and crops to the specified aspect
+
+    :param str dir: The directory containing the videos to choose from
+    :param float duration: The desired duration for the output
+    :param float aspect: The desired aspect ratio of the output
+    :return: The cropped video clip in the desired duration
+    :rtype: mpy.VideoClip
+    :raises Exception: if there are no videos in the directory which are suitable
+    """
     files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))]
     valid = []
     for f in files:
@@ -38,22 +46,34 @@ def select_clip(
 
 
 def animate_text(
-    video: VideoClip,
+    video: mpy.VideoClip,
     time: float,
     text_meta,
-    audioclip: AudioClip,
+    audioclip: mpy.AudioClip,
     font: str,
     font_size: int,
     text_color: str = "black",
     stroke_color: str = "white",
     stroke_width: float = 2,
-    highlight_color: str = "red"
-):
+    highlight_color: str = "red",
+    fade_duration: float = 0.3,
+    wrap_width_ratio: float = 0.8,
+) -> mpy.VideoClip:
+    """
+    Adds audio and text to a video clip
+
+    :param mpy.VideoClip video: The video to overlay the text captions onto
+    :param float time: The time which the text captions should start on the video
+    :param list text_meta: Metadata of the captions and the time which each word appears
+    :param mpy.AudioClip audioclip: The audioclip to add to the video, associated with the captions
+    :return: The composited video clip with the audio and captions added
+    :rtype: mpy.VideoClip
+    """
     screensize = video.size
 
     total_h = screensize[1]
     total_w = screensize[0]
-    wrap_w = int(total_w * 0.8)
+    wrap_w = int(total_w * wrap_width_ratio)
 
     text_clips = []
     for text_detail in text_meta:
@@ -107,8 +127,8 @@ def animate_text(
                     word_clip.set_position((curr_w, curr_h))
                     .set_start(word_start)
                     .set_end(sentence_end_t)
-                    .crossfadein(0.2)
-                    .crossfadeout(0.2)
+                    .crossfadein(fade_duration)
+                    .crossfadeout(fade_duration)
                 )
                 curr_w += word_clip.size[0]
             curr_h += line_height
