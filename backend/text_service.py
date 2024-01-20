@@ -5,9 +5,17 @@ import moviepy.editor as mpy
 import moviepy.video.fx.all as vfx
 
 
-def select_clip(
-    dir: str, duration: float, aspect=9 / 16
-) -> mpy.VideoClip:  # aspect is epcified in w/h
+def select_clip(dir: str, duration: float, aspect: float = 9 / 16) -> mpy.VideoClip:
+    """
+    Selects a random video clip from a directory of videos, and crops to the specified aspect
+
+    :param str dir: The directory containing the videos to choose from
+    :param float duration: The desired duration for the output
+    :param float aspect: The desired aspect ratio of the output
+    :return: The cropped video clip in the desired duration
+    :rtype: mpy.VideoClip
+    :raises Exception: if there are no videos in the directory which are suitable
+    """
     files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))]
     valid = []
     for f in files:
@@ -49,6 +57,7 @@ def animate_text(
     stroke_width: float = 2,
     highlight_color: str = "red",
     fade_duration: float = 0.3,
+    wrap_width_ratio: float = 0.8,
 ) -> mpy.VideoClip:
     """
     Adds audio and text to a video clip
@@ -64,7 +73,7 @@ def animate_text(
 
     total_h = screensize[1]
     total_w = screensize[0]
-    wrap_w = int(total_w * 0.8)
+    wrap_w = int(total_w * wrap_width_ratio)
 
     text_clips = []
     for text_detail in text_meta:
