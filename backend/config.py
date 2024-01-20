@@ -1,44 +1,37 @@
 import os
-from openai import AzureOpenAI
-from dotenv import load_dotenv
-load_dotenv()
+from openai import OpenAI
 
-client =  AzureOpenAI(
-    # https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#rest-api-versioning
-    api_version="2023-07-01-preview",
-    # https://learn.microsoft.com/en-us/azure/cognitive-services/openai/how-to/create-resource?pivots=web-portal#create-a-resource
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+try: 
+    from dotenv import load_dotenv
+    load_dotenv()
+except ModuleNotFoundError:
+    print("Warning -- dotenv could not be imported, will use default environment variables")
 
-)
+client = OpenAI(api_key=os.getenv("OPENAI_KEY"))
+default_model = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
 
-model_instance = os.getenv("AZURE_OPENAI_GPT4_DEPLOYMENT_NAME")
+prompt_template = """
+You are a educational content creator and you are trying to explain the following complicated concept to a general audience . 
+Please extract key information and then simplify and summarize the following text:
 
+-- TEXT START --
+{text}
+-- TEXT END --
 
-prompt_template = '''
+Output the simplified text below as a narration script for voice over in the following format:\n\n
 
-you are a educational content creator and you are trying to explain the following complicated concept to a general audience . Please
+[
+    {{
+        "idx": number,
+        "text": text,
+        "highlight": [important words in text],
+        "image": description
+    }},
+]
 
-extract key information and then simplify and summarize the following text:\n\n
-{context}
-
-
-output the simplified text below as a narration script for voice over in the following format:\n\n
-
-[start]
-
-[scene number]
-[emphasis words:]
-[dalle prompt: ]
-[scene start]
-
-[scene end]
-[scene transition]
-
-[end]
-
-YOU MUST FOLLOW THESE RULES FOR THE OUTPUT TO BE CORRECTLY FORMATTED:
-1.add a transition between each key piece of information
-2. you have to extract a minimum of 3 emphasis words from the text and add them to the narration script that are dramatic 
-3. generate a prompt for a image that best represents the concept of the scene and add it to the narration script
-
-''' 
+Each scene should be at most two sentences long.
+The first scene should be an interesting hook for audience.
+The last scene should be a profound relevation.
+Highlight the most important part of the text. 
+Write at least 8 scenes.
+"""
