@@ -2,10 +2,12 @@ from openai import OpenAI
 from config import prompt_template, client, default_model
 import json
 
+
 def build_prompt(text: str) -> str:
     return prompt_template.format(text=text)
 
-def generate(prompt: str, model: str=default_model) -> dict:
+
+def generate(prompt: str, model: str = default_model) -> dict:
     try:
         completion = client.chat.completions.create(
             model=model,  # e.g. gpt-35-instant
@@ -26,6 +28,7 @@ def generate(prompt: str, model: str=default_model) -> dict:
 
     except Exception as e:
         print(e)
+
 
 if __name__ == "__main__":
     text = """Camus has argued that the absurd hero sees life as a constant struggle, without hope. Any attempt to deny or avoid the struggle and the hopelessness that define our lives is an attempt to escape from this absurd contradiction. Camus's single requirement for the absurd man is that he live with full awareness of the absurdity of his position. While Sisyphus is pushing his rock up the mountain, there is nothing for him but toil and struggle. But in those moments where Sisyphus descends the mountain free from his burden, he is aware. He knows that he will struggle forever and he knows that this struggle will get him nowhere. This awareness is precisely the same awareness that an absurd man has in this life. So long as Sisyphus is aware, his fate is no different and no worse than our lot in life.

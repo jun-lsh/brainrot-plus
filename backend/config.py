@@ -1,11 +1,14 @@
 import os
 from openai import OpenAI
 
-try: 
+try:
     from dotenv import load_dotenv
+
     load_dotenv()
 except ModuleNotFoundError:
-    print("Warning -- dotenv could not be imported, will use default environment variables")
+    print(
+        "Warning -- dotenv could not be imported, will use default environment variables"
+    )
 
 client = OpenAI(api_key=os.getenv("OPENAI_KEY"))
 default_model = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
