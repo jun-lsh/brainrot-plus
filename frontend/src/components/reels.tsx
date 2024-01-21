@@ -47,7 +47,8 @@ const Reels = ({videos}:{videos:string[]}) => {
                 <Separator className="mt-4" />
             </div>
              <div className="grid grid-cols-3 gap-6">
-            <div className=" w-[240px] h-[320px] aspect-w-4 aspect-h-3 rounded-md bg-zinc-400">
+              {videos.map((video, index) => (
+                       <div key={index} className=" w-[240px] h-[320px] aspect-w-4 aspect-h-3 rounded-md bg-zinc-400">
                      <video 
                       className=" absolute top-0 left-0 w-full h-full object-cover rounded-md hover:cursor-pointer"
                 src={video}
@@ -65,6 +66,10 @@ const Reels = ({videos}:{videos:string[]}) => {
 
             </div>
 
+                
+              ))
+              }
+     
       
           
            
@@ -113,7 +118,7 @@ const Reels = ({videos}:{videos:string[]}) => {
                   loop={true} 
                  playsInline={true}
                  controls={true}
-                 autoPlay={true}
+                 autoPlay={false}
                  
                     
                 ></video>

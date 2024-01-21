@@ -12,23 +12,43 @@ import ReactPlayer from 'react-player/youtube'
 import Reels from './components/reels'
 import Test_swipe from './components/test_swiper'
 import axios from 'axios';
+// import test_vid from '../../backend/videos/0aa43d3c-2731-49bb-8d1e-3918d428a8f8.mp4'
+
 
 
 function App() {
   const [loading, setloading] = useState<boolean>(false);
-  const [reels, setreels] = useState(["test"]);
+  const [reels, setreels] = useState<string[]>([]);
   const [text, settext] = useState("");
   
   quantum.register()
 
+    
+
   const handleClick = () => {
     setloading(true)
-    axios.post('http://localhost:8000/generate', {
-      query: text
+    axios.post('http://127.0.0.1:8000/generate', {
+      q: text
     }).then((response) => {
-      console.log(response);
-      setreels(response.data)
-      setloading(false)
+      console.log("out");
+      axios.get('http://127.0.0.1:8000/videos').then((response) => {
+        console.log("in");
+        const new_url =  response.data.map((video:string)=>{
+          return "http://127.0.0.1:8000/videos/"+video
+        })
+        setreels(new_url)
+        setloading(false)
+       
+        
+      }
+      ).catch((error) => {
+        console.log(error);
+      });
+
+
+
+
+      
 
     }
     ).catch((error) => {
@@ -72,7 +92,7 @@ function App() {
       :
       <div>
         <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-lg dark:bg-gray-800">
-        <h2 className="text-xl font-montserrat font-medium text-center text-gray-900 dark:text-white">Upload your PDF or Enter Text</h2>
+        <h2 className="text-xl font-montserrat font-medium text-center text-gray-900 dark:text-white">Enter Any Text You Like</h2>
         <p className="text-center font-montserrat text-gray-500 dark:text-gray-400">
           input a text of a chapter of a book or difficult concept 
         </p>
@@ -87,7 +107,9 @@ function App() {
              
           </div>
         </div>
-        <Button disabled={text==""} className="w-full font-montserrat hover:bg-[#ff0050]" onClick={()=>{handleClick}}>Submit</Button>
+        <Button disabled={text==""} className="w-full font-montserrat hover:bg-[#ff0050]" onClick={()=>{
+          handleClick()
+}}>Submit</Button>
       
       
       
