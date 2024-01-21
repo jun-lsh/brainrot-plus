@@ -5,6 +5,7 @@ import uuid
 
 from fastapi import FastAPI
 import uvicorn
+from starlette.responses import FileResponse
 
 from services.audio_service import generate_audio, generate_audio_timestamps
 from services.image_service import download_images
@@ -34,10 +35,14 @@ class Query(BaseModel):
 def read_root():
     return get_dir_videos(output_dir)
 
+@app.get("/videos/{file_id}")
+def read_file(file_id: uuid.UUID):
+    return FileResponse(os.path.join(output_dir, f"{file_id}.mp4"))
+
 
 @app.post("/generate")
 async def generate(query: Query):
-    print("Querying GPT3.5")
+    print(f"Querying model: {default_model}")
     script = generate_script(query.q, default_model, client)
 
     text = script["text"]
@@ -81,9 +86,10 @@ async def generate(query: Query):
         output_file,
         fps=24,
         audio_codec="aac",
-        threads=6,
+        threads=8,
         codec="h264_videotoolbox",
         preset="superfast",
+        ffmpeg_params=['-q:v', '30']
     )
 
     return output_file
