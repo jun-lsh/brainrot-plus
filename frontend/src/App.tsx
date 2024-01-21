@@ -12,19 +12,23 @@ import ReactPlayer from 'react-player/youtube'
 import Reels from './components/reels'
 import Test_swipe from './components/test_swiper'
 import axios from 'axios';
+import test_vid from './assets/717105fc-e39e-4fed-aad8-df342238ec71.mp4'
+
 
 
 function App() {
-  const [loading, setloading] = useState<boolean>(false);
-  const [reels, setreels] = useState(["test"]);
+  const [loading, setloading] = useState<boolean>(true);
+  const [reels, setreels] = useState([]);
   const [text, settext] = useState("");
   
   quantum.register()
 
+    
+
   const handleClick = () => {
     setloading(true)
-    axios.post('http://localhost:8000/generate', {
-      query: text
+    axios.post('http://127.0.0.1:8000/generate', {
+      q: text
     }).then((response) => {
       console.log(response);
       setreels(response.data)
@@ -72,7 +76,7 @@ function App() {
       :
       <div>
         <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-lg dark:bg-gray-800">
-        <h2 className="text-xl font-montserrat font-medium text-center text-gray-900 dark:text-white">Upload your PDF or Enter Text</h2>
+        <h2 className="text-xl font-montserrat font-medium text-center text-gray-900 dark:text-white">Enter Any Text You Like</h2>
         <p className="text-center font-montserrat text-gray-500 dark:text-gray-400">
           input a text of a chapter of a book or difficult concept 
         </p>
@@ -87,7 +91,9 @@ function App() {
              
           </div>
         </div>
-        <Button disabled={text==""} className="w-full font-montserrat hover:bg-[#ff0050]" onClick={()=>{handleClick}}>Submit</Button>
+        <Button disabled={text==""} className="w-full font-montserrat hover:bg-[#ff0050]" onClick={()=>{
+          handleClick()
+}}>Submit</Button>
       
       
       
