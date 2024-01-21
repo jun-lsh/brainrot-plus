@@ -1,4 +1,4 @@
-# Brainrot Plus: Transforming Learning with Engaging Reels
+# Brainrot Plus: Inverse Digital Fentanyl
 
 ## Inspiration
 Social media platforms like Instagram and TikTok have given rise to a phenomenon where the younger generation is developing shorter attention spans due to the addictive nature of entertaining but often low-quality content. This content not only consumes precious time that could be used for more productive activities but also lacks educational value. Our idea is to leverage the addictive and easy-to-consume nature of such content to make it both educational and helpful.
