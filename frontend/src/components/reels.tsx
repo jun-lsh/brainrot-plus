@@ -17,10 +17,10 @@ import {
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures'
 import Footer from "./footer";
 
-const Reels = () => {
+const Reels = ({videos}:{videos:string[]}) => {
     
     const [singleViewer, setsingleViewer] = useState(false);
-    const [videos, setvideos] = useState([{video:video,play:false},{video:video,play:false},{video:video,play:false},{video:video,play:false}]);
+    // const [videos, setvideos] = useState([{video:video,play:false},{video:video,play:false},{video:video,play:false},{video:video,play:false}]);
       const [api, setApi] = useState<CarouselApi>()
     const currentVideo = useRef(null)
  
@@ -29,20 +29,7 @@ const Reels = () => {
       return
     }
  
-    api.on("slidesInView", () => {
-      // Do something on select.
-      console.log(api.slidesInView()[0])
-      setvideos(videos.map((video,index)=>{
-            if(index==api.slidesInView()[0]){
-                return {...video,play:true}
-            }else{
-                return {...video,play:false}
-            }
-        }))
-        console.log(videos)
 
-      
-    })
     console.log(api.slideNodes())
     console.log(api.slidesInView())
     
@@ -122,11 +109,11 @@ const Reels = () => {
                      <video 
                      ref={currentVideo}
                       className=" object-cover rounded-md hover:cursor-pointer"
-                src={video.video}
+                src={video}
                   loop={true} 
                  playsInline={true}
                  controls={true}
-                 autoPlay={video.play}
+                 autoPlay={true}
                  
                     
                 ></video>
