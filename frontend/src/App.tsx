@@ -11,24 +11,44 @@ import mascot from './assets/mascot.png'
 import ReactPlayer from 'react-player/youtube'
 import Reels from './components/reels'
 import Test_swipe from './components/test_swiper'
-
+import axios from 'axios';
 
 
 function App() {
   const [loading, setloading] = useState<boolean>(false);
-  const [reels, setreels] = useState([]);
+  const [reels, setreels] = useState(["test"]);
+  const [text, settext] = useState("");
+  
   quantum.register()
+
+  const handleClick = () => {
+    setloading(true)
+    axios.post('http://localhost:8000/generate', {
+      query: text
+    }).then((response) => {
+      console.log(response);
+      setreels(response.data)
+      setloading(false)
+
+    }
+    ).catch((error) => {
+      console.log(error);
+    });
+    
+  }
 
   return (
     <>
     
     <div className="flex flex-col items-center justify-center min-h-screen top-0 bottom-0 ">
-      {/* {!loading ? 
-      <div>
+    {reels.length <=0 ? <div>
 
-         <h1 className='text-6xl font-montserrat font-bold bg-gradient-to-r from-[#2af0ea] to-[#fe2858] inline-block text-transparent bg-clip-text'> BrainRot+  
+      {!loading ? 
+      <div className='flex flex-col items-center'>
+
+        <h1 className='text-6xl font-montserrat font-bold bg-gradient-to-r from-[#2af0ea] to-[#fe2858] inline-block text-transparent bg-clip-text'> BrainRot+  
       </h1>
-      <p className='text-2xl font-montserrat font-semibold'>Don't let tiktok's rot your brain </p>
+      <p className='text-2xl font-montserrat font-semibold '>Don't let tiktok's rot your brain </p>
       </div>
       :
       <div></div>
@@ -51,22 +71,26 @@ function App() {
       </div>
       :
       <div>
-         <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-lg dark:bg-gray-800">
+        <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-lg dark:bg-gray-800">
         <h2 className="text-xl font-montserrat font-medium text-center text-gray-900 dark:text-white">Upload your PDF or Enter Text</h2>
         <p className="text-center font-montserrat text-gray-500 dark:text-gray-400">
-          We accept both PDF files and direct text input. Choose the method that works best for you!
+          input a text of a chapter of a book or difficult concept 
         </p>
         <div className="grid gap-6">
           <div className="grid w-full gap-1.5">
-            <Label className="text-left font-montserrat" htmlFor="pdf-upload">Upload PDF</Label>
-            <Input accept=".pdf" id="pdf-upload" type="file" />
-          </div>
-          <div className="grid w-full gap-1.5">
-            <Label className='text-left font-montserrat' htmlFor="text-input">Or Enter Text</Label>
-            <Textarea id="text-input" placeholder="Type or paste your text here." />
+            <Label className='text-left font-montserrat mb-1' htmlFor="text-input">Enter Text</Label>
+            <Textarea id="text-input" placeholder="Type or paste your text here." onChange={
+              (e)=>{
+                settext(e.target.value)
+              }
+            }/>
+             
           </div>
         </div>
-        <Button className="w-full font-montserrat hover:bg-[#ff0050]" onClick={()=>setloading(true)}>Submit</Button>
+        <Button disabled={text==""} className="w-full font-montserrat hover:bg-[#ff0050]" onClick={()=>{handleClick}}>Submit</Button>
+      
+      
+      
       </div>
 
       <div className='mt-8 flex flex-col items-center'>
@@ -79,8 +103,15 @@ function App() {
        
       
       
-      } */}
-     <Reels></Reels>
+      }
+
+        
+      </div>:
+           <Reels videos={reels}></Reels>
+
+      }
+    
+   
         </div>
 
 
