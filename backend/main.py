@@ -1,6 +1,7 @@
 import asyncio
 import concurrent
 import os
+import time
 import uuid
 
 from fastapi import FastAPI
@@ -36,7 +37,7 @@ def read_root():
     return get_dir_videos(output_dir)
 
 @app.get("/videos/{file_id}")
-def read_file(file_id: uuid.UUID):
+def read_file(file_id: str):
     return FileResponse(os.path.join(output_dir, f"{file_id}.mp4"))
 
 
@@ -79,7 +80,7 @@ async def generate(query: Query):
     print("Compositing captions onto video")
     edited = composite_captions_images(video, timestamps, audio_filename)
 
-    id = uuid.uuid4()
+    id = f"{int(time.time())}_{uuid.uuid4()}"
     print(f"Writing video to file: {id}")
     output_file = os.path.join(output_dir, f"{id}.mp4")
     edited.write_videofile(
@@ -92,7 +93,7 @@ async def generate(query: Query):
         ffmpeg_params=['-q:v', '30']
     )
 
-    return output_file
+    return id
 
 
 if __name__ == "__main__":
