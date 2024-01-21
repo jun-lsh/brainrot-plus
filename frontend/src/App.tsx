@@ -11,19 +11,38 @@ import mascot from './assets/mascot.png'
 import ReactPlayer from 'react-player/youtube'
 import Reels from './components/reels'
 import Test_swipe from './components/test_swiper'
-
+import axios from 'axios';
 
 
 function App() {
   const [loading, setloading] = useState<boolean>(false);
-  const [reels, setreels] = useState([]);
+  const [reels, setreels] = useState(["test"]);
   const [text, settext] = useState("");
+  
   quantum.register()
+
+  const handleClick = () => {
+    setloading(true)
+    axios.post('http://localhost:8000/generate', {
+      query: text
+    }).then((response) => {
+      console.log(response);
+      setreels(response.data)
+      setloading(false)
+
+    }
+    ).catch((error) => {
+      console.log(error);
+    });
+    
+  }
 
   return (
     <>
     
     <div className="flex flex-col items-center justify-center min-h-screen top-0 bottom-0 ">
+    {reels.length <=0 ? <div>
+
       {!loading ? 
       <div className='flex flex-col items-center'>
 
@@ -68,7 +87,7 @@ function App() {
              
           </div>
         </div>
-        <Button disabled={text==""} className="w-full font-montserrat hover:bg-[#ff0050]" onClick={()=>setloading(true)}>Submit</Button>
+        <Button disabled={text==""} className="w-full font-montserrat hover:bg-[#ff0050]" onClick={()=>{handleClick}}>Submit</Button>
       
       
       
@@ -85,7 +104,14 @@ function App() {
       
       
       }
-     {/* <Reels></Reels> */}
+
+        
+      </div>:
+           <Reels videos={reels}></Reels>
+
+      }
+    
+   
         </div>
 
 

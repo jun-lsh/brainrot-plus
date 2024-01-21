@@ -1,0 +1,19 @@
+name: brainrot-plus
+channels:
+  - defaults
+dependencies:
+  - python=3.9
+  - black
+  - fastapi
+  - numpy
+  - openai
+  - pillow
+  - python-dotenv
+  - requests
+  - uvicorn
+  - conda-forge::moviepy
+  - conda-forge::opencv
+  - conda-forge::google-cloud-texttospeech
+  - pip:
+      - perlin-noise
+      - stable-ts
