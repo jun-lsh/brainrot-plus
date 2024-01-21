@@ -118,7 +118,7 @@ const Reels = ({videos}:{videos:string[]}) => {
                   loop={true} 
                  playsInline={true}
                  controls={true}
-                 autoPlay={true}
+                 autoPlay={false}
                  
                     
                 ></video>

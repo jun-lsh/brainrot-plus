@@ -30,13 +30,14 @@ function App() {
     axios.post('http://127.0.0.1:8000/generate', {
       q: text
     }).then((response) => {
-      console.log(response);
-      axios.get('http://127.0.0.1/videos').then((response) => {
+      console.log("out");
+      axios.get('http://127.0.0.1:8000/videos').then((response) => {
+        console.log("in");
         const new_url =  response.data.map((video:string)=>{
-          const uuid = video.split('_')[1]
-          return "http://127.0.0.1:8000/videos/"+uuid
+          return "http://127.0.0.1:8000/videos/"+video
         })
         setreels(new_url)
+        setloading(false)
        
         
       }
@@ -46,7 +47,6 @@ function App() {
 
 
 
-      setloading(false)
 
       
 
