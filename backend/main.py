@@ -14,21 +14,24 @@ from services.video_service import (
     generate_timings,
     generate_slideshow,
     wobble_effect,
-    composite_captions_images,
+    composite_captions_images, get_dir_videos,
 )
 from pydantic import BaseModel
+from pathlib import Path
 
 app = FastAPI()
 output_dir = "./videos"
+
+Path(output_dir).mkdir(parents=True, exist_ok=True)
 
 
 class Query(BaseModel):
     q: str
 
 
-@app.get("/")
+@app.get("/videos")
 def read_root():
-    return {"Hello": "World"}
+    return get_dir_videos(output_dir)
 
 
 @app.post("/generate")
@@ -72,8 +75,9 @@ async def generate(query: Query):
 
     id = uuid.uuid4()
     print(f"Writing video to file: {id}")
+    output_file = os.path.join(output_dir, f"{id}.mp4")
     edited.write_videofile(
-        os.path.join(output_dir, f"{id}.mp4"),
+        output_file,
         fps=24,
         audio_codec="aac",
         threads=6,
@@ -81,7 +85,7 @@ async def generate(query: Query):
         preset="superfast"
     )
 
-    return str(id)
+    return output_file
 
 
 if __name__ == "__main__":

@@ -1,3 +1,5 @@
+import os
+
 import moviepy.editor as mpy
 import moviepy.video.fx.all as vfx
 from moviepy.editor import clips_array
@@ -6,6 +8,17 @@ from perlin_noise import PerlinNoise
 
 from services.audio_service import select_audio
 from services.text_service import crop_to_aspect, select_clip, animate_text
+
+def get_dir_videos(dir):
+    files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))]
+    valid = []
+    for f in files:
+        try:
+            if mpy.VideoFileClip(os.path.join(dir, f)).duration > 0:
+                valid.append(f)
+        except:
+            pass
+    return valid
 
 
 def generate_noise(length, multiplier):
