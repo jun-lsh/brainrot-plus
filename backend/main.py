@@ -14,7 +14,8 @@ from services.video_service import (
     generate_timings,
     generate_slideshow,
     wobble_effect,
-    composite_captions_images, get_dir_videos,
+    composite_captions_images,
+    get_dir_videos,
 )
 from pydantic import BaseModel
 from pathlib import Path
@@ -82,7 +83,7 @@ async def generate(query: Query):
         audio_codec="aac",
         threads=6,
         codec="h264_videotoolbox",
-        preset="superfast"
+        preset="superfast",
     )
 
     return output_file

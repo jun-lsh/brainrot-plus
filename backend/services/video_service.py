@@ -9,6 +9,7 @@ from perlin_noise import PerlinNoise
 from services.audio_service import select_audio
 from services.text_service import crop_to_aspect, select_clip, animate_text
 
+
 def get_dir_videos(dir):
     files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))]
     valid = []

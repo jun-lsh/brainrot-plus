@@ -14,7 +14,8 @@ os.environ[
 client = texttospeech.TextToSpeechClient()
 model = stable_whisper.load_model("base")
 
-def select_audio(dir: str, duration: float, volume:float) -> mpy.AudioClip:
+
+def select_audio(dir: str, duration: float, volume: float) -> mpy.AudioClip:
     """
     Selects a random video clip from a directory of videos
 
