@@ -1,5 +1,6 @@
 import moviepy.editor as mpy
 import moviepy.video.fx.all as vfx
+from moviepy.editor import clips_array
 import numpy as np
 from perlin_noise import PerlinNoise
 
@@ -217,16 +218,30 @@ def generate_slideshow(images, timings):
 
     return mpy.concatenate_videoclips(clips)
 
-def composite_captions_images(video: mpy.VideoClip, text_meta, audio_filename, start_time: float=0):
+
+def composite_captions_images(
+    video: mpy.VideoClip, text_meta, audio_filename, start_time: float = 0
+):
     audio = mpy.AudioFileClip(audio_filename)
-    background = crop_to_aspect(select_clip('background', duration=video.duration), aspect=9 / 16).without_audio()
+    background = crop_to_aspect(
+        select_clip("background", duration=video.duration), aspect=9 / 8
+    ).without_audio()
 
     w = 720
     background = vfx.resize(background, width=w)
     video = vfx.resize(video, width=w)
+    h = video.size[1]
 
-    captioned = animate_text(video, start_time, text_meta, audio, font='Bebas-Neue-Regular', font_size=75, stroke_width=1.2)
+    captioned = animate_text(
+        video,
+        start_time,
+        text_meta,
+        audio,
+        font="Bebas-Neue-Regular",
+        font_size=75,
+        stroke_width=1.2,
+    )
 
-    stacked = mpy.CompositeVideoClip([background, captioned])
+    # stacked = mpy.CompositeVideoClip([background, captioned.set_position((0,h))], )
+    stacked = clips_array([[captioned], [background]])
     return stacked
-

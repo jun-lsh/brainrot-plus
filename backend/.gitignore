@@ -172,3 +172,5 @@ background
 nice_backgrounds
 **/*.wav
 **/*.mp4
+
+./videos

@@ -18,9 +18,9 @@ def generate_audio(script, output_file=None):
     # ****** the NAME
     # and the ssml voice gender ("neutral")
     voice = texttospeech.VoiceSelectionParams(
-        language_code="en-US",
-        name="en-US-Wavenet-C",
-        ssml_gender=texttospeech.SsmlVoiceGender.FEMALE,
+        language_code="en-GB",
+        name="en-GB-News-M",
+        ssml_gender=texttospeech.SsmlVoiceGender.MALE,
     )
 
     # Select the type of audio file you want returned
