@@ -6,16 +6,18 @@ authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.9"
 openai = "^1.8.0"
 python-dotenv = "^1.0.0"
-selenium = "3.141.0"
 requests = "^2.31.0"
 pillow = "^10.2.0"
 black = "^23.12.1"
 perlin-noise = "^1.12"
 numpy = "^1.26.3"
 moviepy = "^1.0.3"
+fastapi = "^0.109.0"
+uvicorn = "^0.26.0"
+google-cloud-texttospeech = "^2.15.1"
 
 
 [build-system]

@@ -18,7 +18,7 @@ You are a educational content creator and you are trying to explain the followin
 Please extract key information and then simplify and summarize the following text:
 
 -- TEXT START --
-{text}
+{context}
 -- TEXT END --
 
 Output the simplified text below as a narration script for voice over in the following format:\n\n

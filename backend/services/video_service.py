@@ -1,8 +1,9 @@
 import moviepy.editor as mpy
 import moviepy.video.fx.all as vfx
-import moviepy.video.tools.segmenting as mseg
 import numpy as np
 from perlin_noise import PerlinNoise
+
+from services.text_service import crop_to_aspect, select_clip, animate_text
 
 
 def generate_noise(length, multiplier):
@@ -215,3 +216,17 @@ def generate_slideshow(images, timings):
         image_clip.close()
 
     return mpy.concatenate_videoclips(clips)
+
+def composite_captions_images(video: mpy.VideoClip, text_meta, audio_filename, start_time: float=0):
+    audio = mpy.AudioFileClip(audio_filename)
+    background = crop_to_aspect(select_clip('background', duration=video.duration), aspect=9 / 16).without_audio()
+
+    w = 720
+    background = vfx.resize(background, width=w)
+    video = vfx.resize(video, width=w)
+
+    captioned = animate_text(video, start_time, text_meta, audio, font='Bebas-Neue-Regular', font_size=75, stroke_width=1.2)
+
+    stacked = mpy.CompositeVideoClip([background, captioned])
+    return stacked
+

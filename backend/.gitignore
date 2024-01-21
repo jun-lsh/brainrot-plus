@@ -167,3 +167,8 @@ cython_debug/
 googleimages_service/webdriver/chromedriver.exe
 googleimages_service/webdriver/LICENSE.chromedriver
 googleimages_service/photos
+
+background
+nice_backgrounds
+**/*.wav
+**/*.mp4
