@@ -12,13 +12,13 @@ import ReactPlayer from 'react-player/youtube'
 import Reels from './components/reels'
 import Test_swipe from './components/test_swiper'
 import axios from 'axios';
-import test_vid from './assets/717105fc-e39e-4fed-aad8-df342238ec71.mp4'
+// import test_vid from '../../backend/videos/0aa43d3c-2731-49bb-8d1e-3918d428a8f8.mp4'
 
 
 
 function App() {
-  const [loading, setloading] = useState<boolean>(true);
-  const [reels, setreels] = useState([]);
+  const [loading, setloading] = useState<boolean>(false);
+  const [reels, setreels] = useState<string[]>([]);
   const [text, settext] = useState("");
   
   quantum.register()
@@ -31,8 +31,24 @@ function App() {
       q: text
     }).then((response) => {
       console.log(response);
-      setreels(response.data)
+      axios.get('http://127.0.0.1/videos').then((response) => {
+        const new_url =  response.data.map((video:string)=>{
+          const uuid = video.split('_')[1]
+          return "http://127.0.0.1:8000/videos/"+uuid
+        })
+        setreels(new_url)
+       
+        
+      }
+      ).catch((error) => {
+        console.log(error);
+      });
+
+
+
       setloading(false)
+
+      
 
     }
     ).catch((error) => {
