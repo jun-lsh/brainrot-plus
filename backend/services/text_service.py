@@ -66,11 +66,13 @@ def animate_text(
     font_size: int,
     text_color: str = "white",
     stroke_color: str = "black",
-    stroke_width: float = 2,
+    stroke_width: float = 8,
     highlight_color: str = "red",
     fade_duration: float = 0.3,
     stay_duration: float = 0.8,
     wrap_width_ratio: float = 0.8,
+    shadow_offset: float = 5,
+    shadow_grow: float = 3,
 ) -> mpy.VideoClip:
     """
     Adds audio and text to a video clip
@@ -89,6 +91,7 @@ def animate_text(
     wrap_w = int(total_w * wrap_width_ratio)
 
     text_clips = []
+    text_shadows = []
     for text_detail in text_meta:
         words_meta = text_detail["words"]
         sentence_start_t = text_detail["start"] + time
@@ -108,14 +111,22 @@ def animate_text(
                 stroke_width=stroke_width,
                 stroke_color=stroke_color,
             )
-            all_word_clips.append((word_clip, start_t, end_t))
+            word_shadow = mpy.TextClip(
+                word,
+                fontsize=font_size,
+                font=font,
+                color=stroke_color,
+                stroke_width=stroke_width + shadow_grow,
+                stroke_color=stroke_color,
+            )
+            all_word_clips.append((word_clip, word_shadow, start_t, end_t))
 
         all_lines = []
         line = []
         width = 0
         height = 0
         max_h = 0
-        for word_clip, word_start, word_end in all_word_clips:
+        for word_clip, word_shadow, word_start, word_end in all_word_clips:
             w, h = word_clip.size
             if h > max_h:
                 max_h = h
@@ -128,16 +139,25 @@ def animate_text(
                 max_h = 0
 
             width += w
-            line.append((word_clip, word_start, word_end))
+            line.append((word_clip, word_shadow, word_start, word_end))
         if len(line) > 0:
             all_lines.append(([l for l in line], width, max_h))
 
         curr_h = int((total_h - height) / 2)
         for line_items, line_width, line_height in all_lines:
             curr_w = int((total_w - line_width) / 2)
-            for word_clip, word_start, word_end in line_items:
+            for word_clip, word_shadow, word_start, word_end in line_items:
                 text_clips.append(
                     word_clip.set_position((curr_w, curr_h))
+                    .set_start(word_start)
+                    .set_end(sentence_end_t)
+                    .crossfadein(fade_duration)
+                    .crossfadeout(fade_duration)
+                )
+                text_shadows.append(
+                    word_shadow.set_position(
+                        (curr_w + shadow_offset, curr_h + shadow_offset)
+                    )
                     .set_start(word_start)
                     .set_end(sentence_end_t)
                     .crossfadein(fade_duration)
@@ -146,7 +166,7 @@ def animate_text(
                 curr_w += word_clip.size[0]
             curr_h += line_height
 
-    captions = mpy.CompositeVideoClip([video] + text_clips)
+    captions = mpy.CompositeVideoClip([video] + text_shadows + text_clips)
     audioclip = audioclip.set_start(time)
     captions.audio = mpy.CompositeAudioClip([audioclip])
     return captions

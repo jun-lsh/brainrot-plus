@@ -1,3 +1,7 @@
+import random
+
+import moviepy.editor as mpy
+import moviepy.audio.fx.all as sfx
 import stable_whisper
 from google.cloud import texttospeech
 import re
@@ -11,6 +15,37 @@ client = texttospeech.TextToSpeechClient()
 model = stable_whisper.load_model("base")
 
 
+def select_audio(dir: str, duration: float, volume: float) -> mpy.AudioClip:
+    """
+    Selects a random video clip from a directory of videos
+
+    :param str dir: The directory containing the videos to choose from
+    :param float duration: The desired duration for the output
+    :param float volume: The desired volume to scale the output to
+    :return: The random video clip in the desired duration
+    :rtype: mpy.VideoClip
+    :raises Exception: if there are no videos in the directory which are suitable
+    """
+    files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))]
+    valid = []
+    for f in files:
+        try:
+            if mpy.AudioFileClip(os.path.join(dir, f)).duration > duration:
+                valid.append(f)
+        except:
+            pass
+    if len(valid) == 0:
+        raise Exception("No audio clips of sufficient length provided")
+    clip = mpy.AudioFileClip(os.path.join(dir, random.choice(valid)))
+    clip_duration = clip.duration - duration
+
+    start = clip_duration * random.random()
+    end = start + duration
+
+    cut = clip.subclip(start, end)
+    return sfx.volumex(cut, volume)
+
+
 def generate_audio(script, output_file=None):
     # Set the text input to be synthesized
     synthesis_input = texttospeech.SynthesisInput(text=script)
@@ -18,9 +53,9 @@ def generate_audio(script, output_file=None):
     # ****** the NAME
     # and the ssml voice gender ("neutral")
     voice = texttospeech.VoiceSelectionParams(
-        language_code="en-US",
-        name="en-US-Wavenet-C",
-        ssml_gender=texttospeech.SsmlVoiceGender.FEMALE,
+        language_code="en-GB",
+        name="en-GB-News-M",
+        ssml_gender=texttospeech.SsmlVoiceGender.MALE,
     )
 
     # Select the type of audio file you want returned

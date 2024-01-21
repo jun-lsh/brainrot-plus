@@ -1,9 +1,25 @@
+import os
+
 import moviepy.editor as mpy
 import moviepy.video.fx.all as vfx
+from moviepy.editor import clips_array
 import numpy as np
 from perlin_noise import PerlinNoise
 
+from services.audio_service import select_audio
 from services.text_service import crop_to_aspect, select_clip, animate_text
+
+
+def get_dir_videos(dir):
+    files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))]
+    valid = []
+    for f in files:
+        try:
+            if mpy.VideoFileClip(os.path.join(dir, f)).duration > 0:
+                valid.append(f)
+        except:
+            pass
+    return valid
 
 
 def generate_noise(length, multiplier):
@@ -217,16 +233,33 @@ def generate_slideshow(images, timings):
 
     return mpy.concatenate_videoclips(clips)
 
-def composite_captions_images(video: mpy.VideoClip, text_meta, audio_filename, start_time: float=0):
+
+def composite_captions_images(
+    video: mpy.VideoClip, text_meta, audio_filename, start_time: float = 0
+):
     audio = mpy.AudioFileClip(audio_filename)
-    background = crop_to_aspect(select_clip('background', duration=video.duration), aspect=9 / 16).without_audio()
+    background = crop_to_aspect(
+        select_clip("background", duration=video.duration), aspect=9 / 8
+    ).without_audio()
+    bg_audio = select_audio("background_music", duration=video.duration, volume=0.10)
 
     w = 720
     background = vfx.resize(background, width=w)
     video = vfx.resize(video, width=w)
+    h = video.size[1]
 
-    captioned = animate_text(video, start_time, text_meta, audio, font='Bebas-Neue-Regular', font_size=75, stroke_width=1.2)
+    captioned = animate_text(
+        video,
+        start_time,
+        text_meta,
+        audio,
+        font="Bebas-Neue-Regular",
+        font_size=75,
+        stroke_width=1.2,
+    )
 
-    stacked = mpy.CompositeVideoClip([background, captioned])
+    # stacked = mpy.CompositeVideoClip([background, captioned.set_position((0,h))], )
+    stacked = clips_array([[captioned], [background]])
+    comp_audio = mpy.CompositeAudioClip([stacked.audio, bg_audio])
+    stacked.audio = comp_audio
     return stacked
-

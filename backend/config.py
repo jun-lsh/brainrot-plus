@@ -28,7 +28,7 @@ Output the simplified text below as a narration script for voice over in the fol
         "idx": number,
         "text": text,
         "highlight": [important words in text],
-        "image": description
+        "image": simplified description as keywords
     }},
 ]
 
