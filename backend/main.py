@@ -78,6 +78,7 @@ async def generate(query: Query):
         audio_codec="aac",
         threads=6,
         codec="h264_videotoolbox",
+        preset="superfast"
     )
 
     return str(id)

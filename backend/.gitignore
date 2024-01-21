@@ -171,6 +171,5 @@ googleimages_service/photos
 background
 nice_backgrounds
 **/*.wav
-**/*.mp4
-
-./videos
+**/*.videos
+background_music

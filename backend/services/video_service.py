@@ -4,6 +4,7 @@ from moviepy.editor import clips_array
 import numpy as np
 from perlin_noise import PerlinNoise
 
+from services.audio_service import select_audio
 from services.text_service import crop_to_aspect, select_clip, animate_text
 
 
@@ -226,6 +227,7 @@ def composite_captions_images(
     background = crop_to_aspect(
         select_clip("background", duration=video.duration), aspect=9 / 8
     ).without_audio()
+    bg_audio = select_audio("background_music", duration=video.duration, volume=0.10)
 
     w = 720
     background = vfx.resize(background, width=w)
@@ -244,4 +246,6 @@ def composite_captions_images(
 
     # stacked = mpy.CompositeVideoClip([background, captioned.set_position((0,h))], )
     stacked = clips_array([[captioned], [background]])
+    comp_audio = mpy.CompositeAudioClip([stacked.audio, bg_audio])
+    stacked.audio = comp_audio
     return stacked
