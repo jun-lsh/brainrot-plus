@@ -1,10 +1,12 @@
 import asyncio
 import concurrent
 import os
+import time
 import uuid
 
 from fastapi import FastAPI
 import uvicorn
+from starlette.responses import FileResponse
 
 from services.audio_service import generate_audio, generate_audio_timestamps
 from services.image_service import download_images
@@ -49,10 +51,14 @@ class Query(BaseModel):
 def read_root():
     return get_dir_videos(output_dir)
 
+@app.get("/videos/{file_id}")
+def read_file(file_id: str):
+    return FileResponse(os.path.join(output_dir, f"{file_id}.mp4"))
+
 
 @app.post("/generate")
 async def generate(query: Query):
-    print("Querying GPT3.5")
+    print(f"Querying model: {default_model}")
     script = generate_script(query.q, default_model, client)
 
     text = script["text"]
@@ -89,19 +95,20 @@ async def generate(query: Query):
     print("Compositing captions onto video")
     edited = composite_captions_images(video, timestamps, audio_filename)
 
-    id = uuid.uuid4()
+    id = f"{int(time.time())}_{uuid.uuid4()}"
     print(f"Writing video to file: {id}")
     output_file = os.path.join(output_dir, f"{id}.mp4")
     edited.write_videofile(
         output_file,
         fps=24,
         audio_codec="aac",
-        threads=6,
+        threads=8,
         codec="h264_videotoolbox",
         preset="superfast",
+        ffmpeg_params=['-q:v', '30']
     )
 
-    return output_file
+    return id
 
 
 if __name__ == "__main__":

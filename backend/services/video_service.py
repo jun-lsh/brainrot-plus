@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 import moviepy.editor as mpy
 import moviepy.video.fx.all as vfx
@@ -15,11 +16,14 @@ def get_dir_videos(dir):
     valid = []
     for f in files:
         try:
-            if mpy.VideoFileClip(os.path.join(dir, f)).duration > 0:
-                valid.append(f)
+            name = Path(f).stem
+            fields = name.split('_')
+            if len(fields) >= 2:
+                if mpy.VideoFileClip(os.path.join(dir, f)).duration > 0:
+                    valid.append(f)
         except:
             pass
-    return valid
+    return [Path(p).stem for p in valid]
 
 
 def generate_noise(length, multiplier):

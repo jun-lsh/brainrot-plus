@@ -11,7 +11,7 @@ except ModuleNotFoundError:
     )
 
 client = OpenAI(api_key=os.getenv("OPENAI_KEY"))
-default_model = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
+default_model = os.getenv("OPENAI_MODEL", "gpt-4-1106-preview")
 
 prompt_template = """
 You are a educational content creator and you are trying to explain the following complicated concept to a general audience . 
@@ -32,9 +32,9 @@ Output the simplified text below as a narration script for voice over in the fol
     }},
 ]
 
-Each scene should be at most two sentences long.
+Each scene should be at most two sentences long, and each sentence should be short and concise.
 The first scene should be an interesting hook for audience.
 The last scene should be a profound relevation.
 Highlight the most important part of the text. 
-Write at least 8 scenes.
+Write at least 5 scenes.
 """
