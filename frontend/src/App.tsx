@@ -16,7 +16,7 @@ import Test_swipe from './components/test_swiper'
 
 function App() {
   const [loading, setloading] = useState<boolean>(false);
-  const [reels, setreels] = useState([]);
+  const [reels, setreels] = useState(["test"]);
   const [text, settext] = useState("");
   quantum.register()
 
@@ -24,6 +24,8 @@ function App() {
     <>
     
     <div className="flex flex-col items-center justify-center min-h-screen top-0 bottom-0 ">
+    {reels.length <=0 ? <div>
+
       {!loading ? 
       <div className='flex flex-col items-center'>
 
@@ -85,7 +87,14 @@ function App() {
       
       
       }
-     {/* <Reels></Reels> */}
+
+        
+      </div>:
+           <Reels></Reels>
+
+      }
+    
+   
         </div>
 
 

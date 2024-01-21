@@ -15,11 +15,11 @@ import {
   CarouselApi
 } from "@/components/ui/carousel" 
 import { WheelGesturesPlugin } from 'embla-carousel-wheel-gestures'
+import Footer from "./footer";
 
 const Reels = () => {
     
     const [singleViewer, setsingleViewer] = useState(false);
-    const [playonScroll, setplayonScroll] = useState(false);
     const [videos, setvideos] = useState([{video:video,play:false},{video:video,play:false},{video:video,play:false},{video:video,play:false}]);
       const [api, setApi] = useState<CarouselApi>()
     const currentVideo = useRef(null)
@@ -91,6 +91,8 @@ const Reels = () => {
 
         </div>
                         <Separator className="mt-4" />
+                                    <Footer></Footer>
+
 
 
         </div>:
